@@ -1,0 +1,81 @@
+---
+title: "Lab2 R Codes"
+author: "Weichang Yu"
+date: "26/06/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Set Home Directory
+```{r}
+# setwd("/home/yourname/NYCTaxiData")
+```
+
+Load data
+```{r}
+mydata = read.csv("sample.csv")
+```
+
+Install t-map package (Library for thematic maps) and other required R packages
+```{r}
+#install.packages("dplyr")
+#install.packages("sf")
+#install.packages("curl")
+#Restart your R Session
+#install.packages("tmap")
+```
+
+Install ggmap
+```{r}
+#install.packages("ggmap")
+
+#OR (choose whichever works on your computer)
+
+#install.packages("devtools")
+#devtools::install_github("dkahle/ggmap")
+```
+
+
+Load libraries
+```{r, message=FALSE, warning=FALSE}
+library(dplyr)
+library(sf)
+library(curl)
+library(ggmap)
+library(tmap)
+library(tmaptools)
+```
+
+
+Download and view map
+```{r, message=FALSE, warning=FALSE}
+map<-get_stamenmap(rbind(as.numeric(paste(geocode_OSM("Manhattan")$bbox))), zoom = 11)
+ggmap(map)
+```
+
+Plot pickup locations
+```{r, message=FALSE, warning=FALSE}
+ggmap(map) + geom_point(aes(x = pickup_longitude, y = pickup_latitude),colour="white", size = 0.01, data = mydata, alpha = .5)
+```
+
+Square binning
+```{r, message=FALSE, warning=FALSE}
+plotmap <- ggmap(map) + geom_bin2d(bins=100, data=mydata, aes(x =
+pickup_longitude, y = pickup_latitude))
+plotmap
+```
+
+Install HexBin
+```{r, message=FALSE, warning=FALSE}
+#install.packages("hexbin")
+```
+
+Plot HexBIn
+```{r, message=FALSE, warning=FALSE}
+plotmapHB <- ggmap(map) + coord_cartesian() + geom_hex(bins=100, data=mydata,
+aes(x = pickup_longitude, y = pickup_latitude))
+plotmapHB
+```
