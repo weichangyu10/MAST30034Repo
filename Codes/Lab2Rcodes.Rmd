@@ -17,6 +17,7 @@ Set Home Directory
 Load data
 ```{r}
 mydata = read.csv("sample.csv")
+dim(mydata)
 ```
 
 Install t-map package (Library for thematic maps) and other required R packages
@@ -73,9 +74,46 @@ Install HexBin
 #install.packages("hexbin")
 ```
 
-Plot HexBIn
+Plot HexBin
 ```{r, message=FALSE, warning=FALSE}
 plotmapHB <- ggmap(map) + coord_cartesian() + geom_hex(bins=100, data=mydata,
 aes(x = pickup_longitude, y = pickup_latitude))
 plotmapHB
+```
+
+Load Data into SparklyR
+```{r, message=FALSE, warning=FALSE}
+library(sparklyr)
+library(dplyr)
+sc <- spark_connect(master = "local")
+nyc_taxi <- spark_read_csv(sc, name = "taxi_data", path ="sample.csv", header = TRUE, delimiter = ",")
+```
+
+Manual square binning by rounding
+```{r, message=FALSE, warning=FALSE}
+nyc_taxi <- nyc_taxi %>%
+mutate(pickup_latitude = round(pickup_latitude,3))%>%
+mutate(pickup_longitude = round(pickup_longitude,3))%>%
+sdf_register("nyc_taxi")
+```
+
+Saving data
+```{r, message=FALSE, warning=FALSE}
+spark_write_csv(nyc_taxi,"rounded",header=TRUE,delimiter=",", mode="overwrite")
+```
+
+Calling data summary and saving
+```{r, message=FALSE, warning=FALSE}
+nyc_taxi_summary <- nyc_taxi %>%
+group_by(pickup_latitude, pickup_longitude) %>%
+summarise(n=n()) %>%
+sdf_register("nyc_taxi_summary")
+#save summary
+spark_write_csv(nyc_taxi_summary,"summary",header=TRUE,delimiter=",", mode="overwrite")
+```
+
+Saving summary
+```{r, message=FALSE, warning=FALSE}
+plotmap <- ggmap(map) + geom_point(aes(x = pickup_longitude, y = pickup_latitude, colour=n, fill=n), data = nyc_taxi_summary, shape=22, size=0.25)
+ggsave("plot.png")
 ```

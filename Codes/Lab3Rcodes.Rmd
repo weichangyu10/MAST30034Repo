@@ -1,0 +1,96 @@
+---
+title: "Lab3 R Codes"
+author: "Weichang Yu"
+date: "26/06/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Set Home Directory
+```{r}
+# setwd("/home/yourname/NYCTaxiData")
+```
+
+Load data
+```{r, message=FALSE, warning=FALSE}
+mydata = read.csv("sample.csv")
+colnames(mydata)
+```
+
+Descriptive statistics
+```{r, message=FALSE, warning=FALSE}
+tripdis = mydata[,5]
+mean(tripdis)
+median(tripdis)
+sum(tripdis<5)/length(tripdis)
+max(tripdis)-min(tripdis)
+sd(tripdis)
+var(tripdis)
+```
+
+Histogram
+```{r, message=FALSE, warning=FALSE}
+hist(tripdis, xlim=c(0,15), breaks=500, xlab="distravel",main="Histogram of distance",col="orange")
+```
+
+Correlation between trip distance and fare amount
+```{r, message=FALSE, warning=FALSE}
+fare = mydata[,13]
+cor(fare,tripdis)
+plot(tripdis[1:200],fare[1:200], xlim=c(0,15), ylim=c(0,50), xlab="distance", ylab="fare", main="scatter plot of the first 200 observations",col="blue")
+```
+
+Load data in SparklyR
+```{r, message=FALSE, warning=FALSE}
+library(sparklyr)
+library(dplyr)
+library(dbplot)
+sc <- spark_connect(master = "local")
+nyc_taxi <- spark_read_csv(sc, name = "taxi_data", path = "sample.csv", header = TRUE, delimiter = ",")
+```
+
+Calculate Statistics
+```{r, message=FALSE, warning=FALSE}
+mean_trip_dist <- nyc_taxi %>% summarise(mean_dist = mean(trip_distance, na.rm = TRUE)) %>% collect
+
+max_trip_dist <- nyc_taxi %>% summarise(max_dist = max(trip_distance)) %>% collect
+
+min_trip_dist <- nyc_taxi %>% summarise(min_dist = min(trip_distance)) %>% collect
+```
+
+Calculate Statistics
+```{r, message=FALSE, warning=FALSE}
+sd_trip_dist <- nyc_taxi %>% summarise(sd = sd(trip_distance)) %>% collect
+
+var_trip_dist <- nyc_taxi %>% summarise(var = var(trip_distance)) %>% collect
+
+trips_dist_five <- nyc_taxi %>% filter(trip_distance<5) %>% sdf_nrow()
+
+trips <- nyc_taxi %>% sdf_nrow()
+trips_dist_five/trips
+```
+
+Correlation
+```{r, message=FALSE, warning=FALSE}
+features <- c("fare_amount", "trip_distance")
+ml_corr(nyc_taxi, columns = features , method = "pearson")
+```
+
+DBplot
+```{r, message=FALSE, warning=FALSE}
+nyc_taxi %>% filter(trip_distance<15) %>% dbplot_histogram(trip_distance, binwidth=0.5)
+
+nyc_taxi %>% filter(trip_distance<15) %>%
+  dbplot_histogram(trip_distance, binwidth=0.5000001)
+
+nyc_taxi %>%
+  filter(is.na(trip_distance)==FALSE,is.na(fare_amount)==FALSE) %>% dbplot_raster(trip_distance,fare_amount)
+
+nyc_taxi %>%
+  filter(is.na(trip_distance)==FALSE,is.na(fare_amount)==FALSE) %>% dbplot_raster(trip_distance,fare_amount,resolution=50)
+
+plot(tripdis,fare, xlim=c(0,215), ylim=c(0,350), xlab="distance", ylab="fare", main="scatter plot of all observations",col="blue")
+```

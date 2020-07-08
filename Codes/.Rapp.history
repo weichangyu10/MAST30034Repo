@@ -1,0 +1,284 @@
+}
+weirdPoissonMean(0:200,mu=0.024)
+sum(weirdPoissonpmftimesx(0:200,mu=0.0025)/sum(weirdPoissonpmf(0:200,mu=0.0025)))
+weirdPoissonMean(0:200,mu=0.0025)
+lm
+help(lm)
+1440+780
+1440+780-150
+1440-150
+1290+780
+x <- rgamma(100000,shape=4,rate=7)
+mean(x*log(x))
+(4/7)*(digamma(4) - log(7) )
+x <- rgamma(100000,shape=4,rate=7)
+mean(x*log(x))
+x <- rgamma(100000,shape=4,rate=7)
+mean(log(x))
+digamma(4) - log(7)
+(4/7)*(digamma(5) - log(7) )
+rexp(100,rate=100)
+rexp(100,rate=1000)
+getwd()
+g <- function(r,s){
+}
+p <- 100; U <- 0.6; a.psi <- 1; b.psi <- 50
+g <- function(r,s){
+p*r/(2*s) * ( digamma(r+1) - log(s) ) - lgamma(r/(2*s)) - r*log(s) + lgamma(r) + (a.psi - r)*(digamma(r) - log(s)) - (r/s)*(b.psi - s + p/2*log(2) + 0.5*U)
+}
+g(3,4)
+g(3,9)
+g(3,1000)
+g(3,10000000)
+g(3,100000)
+g(3,1000)
+dgdx <- D(g, "r")
+derivative = deriv(~g,"r")
+r <- 2
+eval(derivative)
+r <- 2; s<-3
+eval(derivative)
+s<-100
+g <- expression(p*r/(2*s) * ( digamma(r+1) - log(s) ) - lgamma(r/(2*s)) - r*log(s) + lgamma(r) + (a.psi - r)*(digamma(r) - log(s)) - (r/s)*(b.psi - s + p/2*log(2) + 0.5*U))
+D(g,"r")
+dgdr <- D(g,"r")
+dgdr
+g <- function(r,s){
+p*r/(2*s) * ( digamma(r+1) - log(s) ) - lgamma(r/(2*s)) - r*log(s) + lgamma(r) + (a.psi - r)*(digamma(r) - log(s)) - (r/s)*(b.psi - s + p/2*log(2) + 0.5*U)
+}
+g <- function(r,s=100){
+p*r/(2*s) * ( digamma(r+1) - log(s) ) - lgamma(r/(2*s)) - r*log(s) + lgamma(r) + (a.psi - r)*(digamma(r) - log(s)) - (r/s)*(b.psi - s + p/2*log(2) + 0.5*U)
+}
+digamma(3)
+Deriv("g(r)", "r",cache.exp=FALSE)
+install.paackages("Deriv")
+install.packages("Deriv")
+library(Deriv)
+Deriv("g(r)", "r",cache.exp=FALSE)
+Dgdr <- function(r,s){(a.psi - r) * trigamma(r) + (p * ((digamma(1 + r) - log(s))/2 +      0.5 * (r * trigamma(1 + r)) - 0.346573590279973) + s - (0.5 *      U + b.psi + digamma(r/(2 * s))/2))/s}
+Dgdr(3,100)
+Dgdr2 <- function(r,s) { p*r/(2*s)*trigamma(r+1) - (1/(2*s))*digamma(r/(2*s)) + (a.psi-r)*trigamma(r) - 1/s*(b.psi-s+ 0.5*p*log(2) + 0.5*U ) }
+Dgdr2(3,100)
+log(2)
+log(2)/2
+-0.5*p*log(2)
+Dgdr(3,100)
+Dgdr(2,100)
+Dgdr2(3,100)
+Dgdr(3,100)
+(Dgdr(3.01,100) - Dgdr(3,100))/0.01
+(Dgdr(3.0001,100) - Dgdr(3.0001,100))/0.0001
+(Dgdr(3.001,100) - Dgdr(3.001,100))/0.001
+(Dgdr(3.001,100) - Dgdr(3,100))/0.001
+Dgdr2(3,100)
+Dgdr(3,100)
+Dgdr2 <- function(r,s) { p*r/(2*s)*trigamma(r+1) + p/(2*s)*(digamma(r+1) - log(s)) - (1/(2*s))*digamma(r/(2*s)) + (a.psi-r)*trigamma(r) - 1/s*(b.psi-s+ 0.5*p*log(2) + 0.5*U ) }
+Dgdr2(3,100)
+g <- function(r=2,s){
+p*r/(2*s) * ( digamma(r+1) - log(s) ) - lgamma(r/(2*s)) - r*log(s) + lgamma(r) + (a.psi - r)*(digamma(r) - log(s)) - (r/s)*(b.psi - s + p/2*log(2) + 0.5*U)
+}
+Deriv("g(s)", "s",cache.exp=FALSE)
+g <- function(s,r=2){
+p*r/(2*s) * ( digamma(r+1) - log(s) ) - lgamma(r/(2*s)) - r*log(s) + lgamma(r) + (a.psi - r)*(digamma(r) - log(s)) - (r/s)*(b.psi - s + p/2*log(2) + 0.5*U)
+}
+Deriv("g(s)", "s",cache.exp=FALSE)
+dgds <- function(r,s){
+{ 2 * (r * digamma(r/(2 * s))/(2 * s)^2) - (a.psi + r * ((p * ((digamma(1 +      r) - log(s))/2 + 0.153426409720027) + s - (0.5 * U + b.psi))/s -      1))/s}
+}
+dgds(2,50)
+dgds2 <- function(r,s){
+-p*r/(2*s^2)*( digamma(r+1) - log(s) ) - p*r/(2*s^2) + r/(2*s^2) * digamma(r/(2*s)) - a.psi/s + r/(s^2)*(b.psi - s + p/2*log(2) + 0.5*U) + r/s
+}
+dgds2(2,50)
+U <- function(ralpha, salpha){
+sum(log(salpha) - digamma(ralpha) + r/salpha)
+}
+25*30
+exp(0)
+exp(-0.4167)
+x <- rgamma(10000,3,5)
+x<-1/x
+plot(density(x))
+plot(density(log(x)))
+load("/Users/weichangyu/Dropbox (Sydney Uni)/EmpiricalLikelihood/Codes/AdaptiveSparseMCMC.RData")
+x = rbind(c(1, 1), c(1, -1), c(-1, -1), c(-1, 1))#
+## If the parameter of interest is the mean, the smoothing function and#
+## its gradient would be#
+f <- function(params, x) {#
+x - params#
+}#
+df <- function(params, x) {#
+rbind(c(-1, 0), c(0, -1))#
+}
+normal_prior <- function(x) {#
+exp(-0.5 * x[1] ^ 2) / sqrt(2 * pi) * exp(-0.5 * x[2] ^ 2) / sqrt(2 * pi)#
+}#
+normal_prior_log_gradient <- function(x) {#
+-x#
+}#
+set.seed(1234)#
+mean.samples <- ELHMC(initial = c(0.96, 0.97), data = x, fun = f, dfun = df,#
+n.samples = 50, prior = normal_prior,#
+dprior = normal_prior_log_gradient)#
+plot(mean.samples$samples, type = "l", xlab = "", ylab = "")
+install.packages("ELHMC")
+install.packages("elhmc")
+library(elhmc)
+normal_prior <- function(x) {#
+exp(-0.5 * x[1] ^ 2) / sqrt(2 * pi) * exp(-0.5 * x[2] ^ 2) / sqrt(2 * pi)#
+}#
+normal_prior_log_gradient <- function(x) {#
+-x#
+}#
+set.seed(1234)#
+mean.samples <- ELHMC(initial = c(0.96, 0.97), data = x, fun = f, dfun = df,#
+n.samples = 50, prior = normal_prior,#
+dprior = normal_prior_log_gradient)#
+plot(mean.samples$samples, type = "l", xlab = "", ylab = "")
+mean.samples$samples
+plot.ts((mean.samples$samples[,1]))
+f(c(3,4),(1,1))
+f(c(3,4),c(1,1))
+f <- function(params,x){
+x[2] - params*x[1]
+}
+f(3,c(1,2))
+f(3,c(1,7))
+f <- function(params,x){
+x[1]*(x[2] - params*x[1])
+}
+f <- function(params,x){
+resid <- x[2] - params[1] - params[2]*x[1]
+c(resid, resid*x[1])
+}
+y <- 1 + 3*rnorm(100,0,3)
+z <- rnorm(100,0,3)
+y <- 1+3*z
+lm(y~z)
+y <- 1+3*z+rnorm(100,0,4)
+lm(y~z)
+f(c(0.8919,2.9817),c(x[1],y[1]))
+x[1]
+x[2]
+f(c(0.8919,2.9817),c(z[1],y[1]))
+z[1]
+lm(y~z)$resid
+lm(y~z)$resid[1]
+dlogLogHalfCauchydx <- function(tauprime,Atau){#
+  1 - 2*exp(2*tauprime)/(Atau^2 + exp(2*tauprime))#
+}
+dlogLogHalfCauchydx(0,3)
+dlogLogHalfCauchydx(seq(-10,10,0.01),1.5)
+dlogLogHalfCauchy <- function(tauprime, Atau){#
+  log(2) + log(Atau) + tauprime - log(pi) - log( exp(tauprime)^2 + Atau^2)#
+}
+dlogLogHalfCauchy(seq(-10,10,0.01),1.5)
+exp(dlogLogHalfCauchy(seq(-10,10,0.01),1.5))
+y<-exp(dlogLogHalfCauchy(seq(-10,10,0.01),1.5))
+x<-seq(-10,10,0.01)
+plot(y~x)
+dlogLogHalfCauchydx <- function(tauprime,Atau){#
+  1 - 2*exp(2*tauprime)/(Atau^2 + exp(2*tauprime))#
+}
+dy <- dlogLogHalfCauchydx(seq(-10,10,0.01),1.5)
+plot(dy~x)
+dy <- dlogLogHalfCauchydx(seq(-10,10,0.01),1.5,pch=".")
+plot(dy~x,pch=".")
+4/(4-2)
+3/(3-2)
+rnorm(2,0,2)
+rnorm(1,0,2)
+(-0.727352 - 0)^2
+sqrt((-0.727352 - 0)^2)
+rnorm(1,0,2)
+sqrt((-3.253345 - 0)^2)
+library(parallel)
+detectCores()
+install.packages("DynTxRegime")
+bmiDara
+library(DynTxRegime)
+bmiData
+data(bmiData)
+bmiData
+4000/12
+epsilon1.MAT <- matrix( rbeta( (3*10), 0.5, 0.5), nrow=10, ncol=3)
+epsilon1.MAT/(1-epsilon1.MAT)
+epsilon1.MAT
+0.22224180/(1-0.22224180)
+0.6511073/(1-0.6511073)
+pnorm(3)
+y <- rnorm(20,0,2)
+mean(y)
+theta.vec <- rnorm(1000,2,10)
+theta.vec
+for(t in 1:100){
+xidraws <- sample(y, size=10000, replace=TRUE)
+if(abs(mean(xidraws) - theta) < 0.1){
+}
+Keep.vec <- c()
+for(t in 1:100){
+xidraws <- sample(y, size=10000, replace=TRUE)
+if(abs(mean(xidraws) - theta.vec[t]) < 0.1){
+Keep.vec[t] <- TRUE
+}
+else{
+Keep.vec[t] <- FALSE
+}
+for(t in 1:100){
+xidraws <- sample(y, size=10000, replace=TRUE)
+}
+for(t in 1:1000){
+xidraws <- sample(y, size=10000, replace=TRUE)
+if(abs(mean(xidraws) - theta.vec[t]) < 0.1){
+Keep.vec[t] <- TRUE
+}
+else{
+Keep.vec[t] <- FALSE
+}
+Keep.vec
+theta.vec[Keep.vec==TRUE]
+mean(y)
+mean(theta.vec[Keep.vec==TRUE])
+theta.vec <- rnorm(100000,2,10)
+for(t in 1:100000){
+xidraws <- sample(y, size=10000, replace=TRUE)
+if(abs(mean(xidraws) - theta.vec[t]) < 0.1){
+Keep.vec[t] <- TRUE
+}
+else{
+Keep.vec[t] <- FALSE
+}
+log(0.1)
+install.packages("sparklyr")
+library(sparklyr)
+spark_install(version = "2.1.0")
+Sys.setenv(JAVA_HOME = "/usr/lib/jvm/java-8-openjdk-amd64/jre")
+library(sparklyr)
+library(dplyr)
+sc <- spark_connect(master = "local")
+rm(list=ls())
+library(sparklyr)
+library(dplyr)
+sc <- spark_connect(master = "local")
+library(sparklyr)
+sc <- spark_connect(master = "local")
+install.packages("sparklyr")
+sc <- spark_connect(master = "local")
+spark_version(sc)
+spark_version()
+sc <- spark_connect(master = "local")
+remove.packages("sparklyr")
+library(sparklyr)
+sc <- spark_connect(master = "local")
+install.packages("sparklyr")
+spark_install(version = "3.0.0")
+spark_available_versions()
+spark_install(version = "3.0.0")
+spark_install(version = "3.1.0")
+spark_install(version = "3.0.0")
+library(sparklyr)
+spark_install(version = "2.1.0")
+sc <- spark_connect(master = "local")
+nyc_taxi <- spark_read_csv(sc, name = "taxi_data", path = "sample.csv", header = TRUE, delimiter = ",")
+getwd()
+nyc_taxi <- spark_read_csv(sc, name = "taxi_data", path = "sample.csv", header = TRUE, delimiter = ",")
