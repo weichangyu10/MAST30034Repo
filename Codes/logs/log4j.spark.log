@@ -7694,3 +7694,13 @@ GROUP BY `x`, `y`
 20/07/08 15:38:31 INFO SparkContext: Successfully stopped SparkContext
 20/07/08 15:38:31 INFO ShutdownHookManager: Shutdown hook called
 20/07/08 15:38:31 INFO ShutdownHookManager: Deleting directory /private/var/folders/69/v3_dt81d0m98q_m198p44hnc0000gn/T/spark-b6b89033-d271-4cf7-b5a1-7912ecdcd366
+20/07/08 16:04:49 INFO SparkContext: Invoking stop() from shutdown hook
+20/07/08 16:04:49 INFO SparkUI: Stopped Spark web UI at http://127.0.0.1:4040
+20/07/08 16:04:49 INFO MapOutputTrackerMasterEndpoint: MapOutputTrackerMasterEndpoint stopped!
+20/07/08 16:04:49 INFO MemoryStore: MemoryStore cleared
+20/07/08 16:04:49 INFO BlockManager: BlockManager stopped
+20/07/08 16:04:49 INFO BlockManagerMaster: BlockManagerMaster stopped
+20/07/08 16:04:49 INFO OutputCommitCoordinator$OutputCommitCoordinatorEndpoint: OutputCommitCoordinator stopped!
+20/07/08 16:04:49 INFO SparkContext: Successfully stopped SparkContext
+20/07/08 16:04:49 INFO ShutdownHookManager: Shutdown hook called
+20/07/08 16:04:49 INFO ShutdownHookManager: Deleting directory /private/var/folders/69/v3_dt81d0m98q_m198p44hnc0000gn/T/spark-abb22a61-deff-4eac-9113-b5f545fc179f
