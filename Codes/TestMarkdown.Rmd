@@ -14,4 +14,5 @@ This is a test Markdown file for demo
 ```{r}
 x <- runif(100)
 mean(x)
+var(x)
 ```
