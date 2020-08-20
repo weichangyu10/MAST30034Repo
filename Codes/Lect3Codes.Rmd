@@ -1,0 +1,56 @@
+---
+title: "TestNYCtaxi"
+author: "Weichang Yu"
+date: "04/08/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+Read data without Sparklyr
+```{r}
+nyc_taxi <- read.csv("yellow_tripdata_2015-12.csv",header=T)
+```
+
+
+Read data with Sparklyr
+```{r}
+library(sparklyr)
+library(dplyr)
+sc <- spark_connect(master = "local")
+nyc_taxi <- spark_read_csv(sc, name = "taxi_data", path ="yellow_tripdata_2015-12.csv", header = TRUE, delimiter = ",")
+```
+
+List of variables
+```{r}
+nyc_taxi %>%
+    tbl_vars()
+```
+
+
+```{r}
+nyc_taxi <- nyc_taxi %>%
+mutate(pickup_latitude = round(pickup_latitude,3))%>%
+mutate(pickup_longitude = round(pickup_longitude,3))%>%
+sdf_register("nyc_taxi")
+```
+
+```{r}
+nyc_taxi_summary <- nyc_taxi %>%
+group_by(pickup_latitude, pickup_longitude) %>%
+summarise(n=n()) %>%
+sdf_register("nyc_taxi_summary")
+```
+
+
+
+```{r}
+nyc_taxi %>%
+  select(tip_amount, extra, fare_amount) %>%
+  mutate(revenue = tip_amount+extra+fare_amount)
+```
+
