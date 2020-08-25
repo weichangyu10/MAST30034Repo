@@ -1,7 +1,7 @@
 ---
-title: "TestNYCtaxi"
+title: "Lect3Codes"
 author: "Weichang Yu"
-date: "04/08/2020"
+date: "13/08/2020"
 output: html_document
 ---
 
@@ -9,48 +9,112 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
-
-Read data without Sparklyr
+Load required packages
 ```{r}
-nyc_taxi <- read.csv("yellow_tripdata_2015-12.csv",header=T)
-```
-
-
-Read data with Sparklyr
-```{r}
-library(sparklyr)
+library(tidyr)
 library(dplyr)
-sc <- spark_connect(master = "local")
-nyc_taxi <- spark_read_csv(sc, name = "taxi_data", path ="yellow_tripdata_2015-12.csv", header = TRUE, delimiter = ",")
 ```
 
-List of variables
+Billboard data comes with tidyr
 ```{r}
-nyc_taxi %>%
-    tbl_vars()
+billboard
 ```
 
-
+Convert to narrow format
 ```{r}
-nyc_taxi <- nyc_taxi %>%
-mutate(pickup_latitude = round(pickup_latitude,3))%>%
-mutate(pickup_longitude = round(pickup_longitude,3))%>%
-sdf_register("nyc_taxi")
-```
+#Synthesize week information into a single column
+billboard2 <- billboard %>%
+  pivot_longer(
+    wk1:wk76,
+    names_to = "week",
+    values_to = "rank",
+    values_drop_na = TRUE
+  )
 
-```{r}
-nyc_taxi_summary <- nyc_taxi %>%
-group_by(pickup_latitude, pickup_longitude) %>%
-summarise(n=n()) %>%
-sdf_register("nyc_taxi_summary")
+billboard2
 ```
-
 
 
 ```{r}
-nyc_taxi %>%
-  select(tip_amount, extra, fare_amount) %>%
-  mutate(revenue = tip_amount+extra+fare_amount)
+#Convert week variable into numeric format
+billboard3 <- billboard2 %>%
+  mutate(
+    week = as.integer(gsub("wk", "", week)),
+    date = as.Date(date.entered) + 7 * (week - 1),
+    date.entered = NULL
+  )
+
+billboard3
 ```
 
+
+```{r}
+#Sort data by artist, track, then week for easy glance through
+billboard3 %>% arrange(artist, track, week)
+```
+
+Read Sample.csv data
+```{r}
+dataSample <- read.csv("sample.csv",header=T)
+dat <- as_tibble(dataSample)
+level_key <- c("Credit Card", "Cash","No charge", "Dispute", "Unknown", "Voided trip")
+```
+
+Bargraph of Payment_types
+```{r}
+library(forcats)
+dat2 = dat %>% mutate(payment_type = as_factor(payment_type)) %>% mutate(payment_type = recode(payment_type,`1` = "Credit Card", `2` = "Cash", `3` = "No charge", `4` = "Dispute"))
+# Checking category frequencies
+fct_count(dat2$payment_type)
+#Collapse Cash/No charge/Dispute
+dat3 = dat2 %>% mutate(payment_type = fct_collapse(payment_type, Credit_Card = c("Credit Card"), Cash_Or_Others=c("Cash","No charge","Dispute")))
+#The bar graph
+g <- ggplot(dat3, aes(payment_type)) + geom_bar(fill=c("pink","orange")) + ylab("Frequency") + ggtitle("Barplot of Payment Methods")+ theme(plot.title = element_text(size=30)) + theme(axis.text.x =element_text(size=20))+theme(axis.text.y =element_text(size=20)) + theme(axis.title = element_text(size=25))
+
+g2 <- ggplot(dat3, aes(trip_distance)) +  geom_histogram(color="darkblue", fill="lightblue", breaks=c(seq(0,20, by=1),25,30,35,40) )+ xlim(0,40)+ theme(plot.title = element_text(size=30)) + theme(axis.text.x =element_text(size=20))+theme(axis.text.y =element_text(size=20)) + theme(axis.title = element_text(size=25))+ ggtitle("Frequency histogram of trip distance")
+
+
+
+pdf("Bargraph.pdf",width=13,height=12)
+g
+dev.off()
+
+pdf("Histogram.pdf",width=13,height=12)
+g2
+dev.off()
+```
+
+Bivariate histogram
+```{r}
+g3 <-ggplot(dat3, aes(x=trip_distance, color=payment_type)) +
+  geom_histogram(fill="white", position="identity", breaks=seq(0,20, by=1), alpha=0.5)+ xlim(0,20)+ theme(plot.title = element_text(size=30)) + theme(axis.text.x =element_text(size=20))+theme(axis.text.y =element_text(size=20)) + theme(axis.title = element_text(size=25))+ ggtitle("Frequency histogram of trip distance") +theme(legend.position="top")
+
+pdf("BivariateHisto.pdf",width=13,height=12)
+g3
+dev.off()
+```
+```{r}
+g4 <-ggplot(dat3, aes(x=trip_distance, y=fare_amount)) + geom_point(colour = "red", size = 1) + ylim(0,100) + xlim(0,25)+ theme(plot.title = element_text(size=30)) + theme(axis.text.x =element_text(size=20))+theme(axis.text.y =element_text(size=20)) + theme(axis.title = element_text(size=25))+ ggtitle("Scatter plot of trip_distance against fare")
+
+pdf("ScatterTrip.pdf",width=13,height=12)
+g4
+dev.off()
+```
+
+Calculate trip duration in minutes
+```{r}
+library(lubridate)
+dat4 <- dat3 %>% mutate(tpep_dropoff_datetime = as.POSIXct(as.character(dat3$tpep_dropoff_datetime), format = "%d/%m/%y %H:%M")) %>% mutate(tpep_pickup_datetime = as.POSIXct(as.character(dat3$tpep_pickup_datetime), format = "%d/%m/%y %H:%M")) %>% mutate(Trip_duration=time_length(as.duration(interval(tpep_pickup_datetime,tpep_dropoff_datetime)),"minute"))
+```
+
+Correlogram
+```{r}
+dat5 <- dat4 %>% select(Trip_duration,trip_distance,fare_amount,passenger_count)
+library(ggcorrplot)
+corr <- round(cor(dat5), 2)
+corrPlotObj <- ggcorrplot(corr, method = "circle")+ theme(plot.title = element_text(size=30)) + theme(axis.text.x =element_text(size=20))+theme(axis.text.y =element_text(size=20)) + theme(axis.title = element_text(size=25))+ ggtitle("Correlogram of selected features")+theme(legend.text=element_text(size=25))
+
+pdf("Correlogram.pdf",width=13,height=12)
+corrPlotObj
+dev.off()
+```
