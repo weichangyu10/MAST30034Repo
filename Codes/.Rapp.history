@@ -1,4 +1,3 @@
-}
 weirdPoissonMean(0:200,mu=0.024)
 sum(weirdPoissonpmftimesx(0:200,mu=0.0025)/sum(weirdPoissonpmf(0:200,mu=0.0025)))
 weirdPoissonMean(0:200,mu=0.0025)
@@ -282,3 +281,4 @@ sc <- spark_connect(master = "local")
 nyc_taxi <- spark_read_csv(sc, name = "taxi_data", path = "sample.csv", header = TRUE, delimiter = ",")
 getwd()
 nyc_taxi <- spark_read_csv(sc, name = "taxi_data", path = "sample.csv", header = TRUE, delimiter = ",")
+qchisq(0.05,11)
