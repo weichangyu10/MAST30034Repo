@@ -1,0 +1,29 @@
+---
+title: "ExampleLMspark"
+author: "Weichang Yu"
+date: "31/08/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(sparklyr)
+library(dplyr)
+sc <- spark_connect(master = "local")
+sample_nyc_taxi <- spark_read_csv(sc, name = "taxi_data", path ="sample.csv", header = TRUE)
+sample_lmObj <- lm(total_amount~passenger_count+tip_amount,data=sample_nyc_taxi)
+summary(sample_lmObj)
+```
+
+
+Big data setting
+```{r}
+nyc_taxi <- spark_read_csv(sc, name = "taxi_data", path ="yellow_tripdata_2015-12.csv", header = TRUE)
+lm_model <- nyc_taxi %>%
+  ml_linear_regression(total_amount ~ tip_amount + passenger_count)
+```
+
+
