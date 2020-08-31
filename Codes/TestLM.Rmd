@@ -16,10 +16,6 @@ sc <- spark_connect(master = "local")
 sample_nyc_taxi <- spark_read_csv(sc, name = "taxi_data", path ="sample.csv", header = TRUE)
 sample_lmObj <- lm(total_amount~passenger_count+tip_amount,data=sample_nyc_taxi)
 summary(sample_lmObj)
-#Standard errors
-lm_model$summary$coefficient_standard_errors()
-#pvalues
-lm_model$summary$p_values()
 ```
 
 
@@ -28,6 +24,10 @@ Big data setting
 nyc_taxi <- spark_read_csv(sc, name = "taxi_data", path ="yellow_tripdata_2015-12.csv", header = TRUE)
 lm_model <- nyc_taxi %>%
   ml_linear_regression(total_amount ~ tip_amount + passenger_count)
+ #Standard errors
+lm_model$summary$coefficient_standard_errors()
+#pvalues
+lm_model$summary$p_values()
 ```
 
 
