@@ -1,0 +1,45 @@
+---
+title: "spark_time"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+sparklyr works with dplyr functions by translating their functions into SQL queries. Some functions, for example those from `lubridate`, can not be successfully translated, thereby returns errors.
+However, to work with time values in sparklyr, there are functions you can use. A list of these functions can be found [here](https://cwiki.apache.org/confluence/display/Hive/LanguageManual+UDF#LanguageManualUDF-DateFunctions).
+
+An example to calculate trip duration in sparkly is shown below.
+```{r}
+library(sparklyr)
+library(dplyr)
+sc <- spark_connect(master = "local")
+nyc_taxi <- spark_read_csv(sc, name = "taxi_data", path = "data/yellow_tripdata_2016-01.csv", 
+                           header = TRUE, delimiter = ",", memory=FALSE)
+```
+
+Method 1: calculate number of days, minutes, and seconds of each trip duration with `day()`, `minute()` and `second()`.
+```{r}
+nyc_taxi %>% head(.,1000) %>% 
+  filter(trip_distance< 5 & trip_distance> 0) %>%
+  mutate(tpep_pickup_datetime= as.POSIXct(tpep_pickup_datetime)) %>%
+  mutate(tpep_dropoff_datetime= as.POSIXct(tpep_dropoff_datetime)) %>% 
+  select(tpep_pickup_datetime, tpep_dropoff_datetime) %>% 
+  mutate(trip_duration=tpep_dropoff_datetime-tpep_pickup_datetime,
+         day=day(trip_duration),
+         minute=minute(trip_duration),
+         second=second(trip_duration))
+```
+Method 2: calculate trip duration in seconds by difference of unix timestamps using `unix_timestamp()`.
+```{r}
+nyc_taxi %>% head(.,1000) %>% 
+  filter(trip_distance< 5 & trip_distance> 0) %>%
+  mutate(tpep_pickup_datetime=unix_timestamp(tpep_pickup_datetime)) %>%
+  mutate(tpep_dropoff_datetime=unix_timestamp(tpep_dropoff_datetime)) %>% 
+  select(tpep_pickup_datetime, tpep_dropoff_datetime) %>% 
+  mutate(trip_duration_in_seconds=tpep_dropoff_datetime-tpep_pickup_datetime)
+```
+
